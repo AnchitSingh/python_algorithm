@@ -1,0 +1,78 @@
+import random
+import string
+
+nodes={}
+
+def getID(N=7):
+    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
+
+def addNode(data):
+    root = getID()
+    nodes[root]={
+        'data': data,
+        'left': None,
+        'right': None
+    }
+    return root
+
+
+def insert(root,data):
+    if root == None:
+        return addNode(data)
+    if data > nodes[root]['data']:
+        nodes[root]['right'] = insert(nodes[root]['right'],data)
+    else:
+        nodes[root]['left'] = insert(nodes[root]['left'],data)
+    return root
+
+def inorder(root):
+    if root == None:
+        return
+    inorder(nodes[root]['left'])
+    print(nodes[root]['data'])
+    inorder(nodes[root]['right'])
+    return
+    
+def getMin(root):
+    while nodes[root]['left'] != None:
+        root = nodes[root]['left']
+    return nodes[root]['data']
+def getMax(root):
+    while nodes[root]['right'] != None:
+        root = nodes[root]['right']
+    return nodes[root]['data']
+
+def delete(root,data):
+    if root == None:
+        return root
+    if data > nodes[root]['data']:
+        nodes[root]['right'] = delete(nodes[root]['right'],data)
+    elif data < nodes[root]['data']:
+        nodes[root]['left'] = delete(nodes[root]['left'],data)
+    else:
+        if nodes[root]['right'] == None:
+            temp = nodes[root]['left']
+            del nodes[root]
+            return temp
+        elif nodes[root]['left'] == None:
+            temp = nodes[root]['right']
+            del nodes[root]
+            return temp
+        minVal = getMin(nodes[root]['right'])
+        nodes[root]['data'] = minVal
+        nodes[root]['right'] = delete(nodes[root]['right'], minVal);
+    return root
+
+
+root = insert(None, 50);
+insert(root, 30);
+insert(root, 20);
+insert(root, 40);
+insert(root, 70);
+insert(root, 60);
+insert(root, 80);
+
+inorder(root)
+
+root = delete(root,20)
+inorder(root)
